@@ -16,7 +16,7 @@ git clone https://github.com/sensepost/rattler.git
 ```
 #Usage
 
-ratter.exe "c:\path\to\target\application.exe" 1
+ratter_32.exe "c:\path\to\target\application.exe" 1
 
 * "c:\path\to\target\application.exe" =path to the executable you want to enumerate.
 * 1 = Enumeration mode, only one at this point.
