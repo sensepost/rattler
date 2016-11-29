@@ -14,6 +14,11 @@ Firstly get the code:
 ```
 git clone https://github.com/sensepost/rattler.git
 ```
+
+#Building the code
+
+Rattler was developed using C++ with Microsoft Visual Studio 2015 using the default console application project settings.
+
 #Getting the binaries
 
 Rattler compiled binaries can be found in the Releases section, https://github.com/sensepost/rattler/releases.
