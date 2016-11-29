@@ -14,6 +14,10 @@ Firstly get the code:
 ```
 git clone https://github.com/sensepost/rattler.git
 ```
+#Getting the binaries
+
+Rattler compiled binaries can be found in the Releases section, https://github.com/sensepost/rattler/releases.
+
 #Usage
 
 ratter_32.exe "c:\path\to\target\application.exe" 1
