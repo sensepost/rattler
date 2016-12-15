@@ -25,6 +25,8 @@ Rattler compiled binaries can be found in the Releases section, https://github.c
 
 #Usage
 
+Depending on the target executable location, Rattler may need to be run with elevated permissions.
+
 ratter_32.exe "c:\path\to\target\application.exe" 1
 
 * "c:\path\to\target\application.exe" =path to the executable you want to enumerate.
