@@ -1,5 +1,5 @@
 #Introduction
-By Chris Le Roy (@bromwpnie) chris@sensepost.com
+By Chris Le Roy (@brompwnie) chris@sensepost.com
 
 Rattler is a tool that automates the identification of DLL's which can be used for DLL preloading attacks.
 
