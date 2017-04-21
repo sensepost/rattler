@@ -1,29 +1,29 @@
-#Introduction
+# Introduction
 By Chris Le Roy (@brompwnie) chris@sensepost.com
 
 Rattler is a tool that automates the identification of DLL's which can be used for DLL preloading attacks.
 
 
-#What does it do?
+# What does it do?
 Rattler automatically enumerates an applications DLL's to identify and exploit DLL's which can be hijacked via a DLL preloading attack.
 
 
-#Getting the code
+# Getting the code
 
 Firstly get the code:
 ```
 git clone https://github.com/sensepost/rattler.git
 ```
 
-#Building the code
+# Building the code
 
 Rattler was developed using C++ with Microsoft Visual Studio 2015 using the default console application project settings.
 
-#Getting the binaries
+# Getting the binaries
 
 Rattler compiled binaries can be found in the Releases section, https://github.com/sensepost/rattler/releases.
 
-#Usage
+# Usage
 
 Depending on the target executable location, Rattler may need to be run with elevated permissions.
 
@@ -68,10 +68,11 @@ C:\Users\User\Desktop>Rattler_32.exe "C:\Users\User\Downloads\NDP462-KB3151800-x
 ```
 
 
-#Information
+# Information
 
 Rattler was developed using C++ using Microsoft Visual Studio 2015. Rattler can be used to test 64 and 32 bit applications. Rattler's default "payload" is a DLL (payload.dll) which invokes calc.exe. The default payload is 32bit. A 64bit payload can be used in conjunction with the 64bit executable to enumerate 64bit executables.
 
-#License
+# License
 
-Rattler is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (http://creativecommons.org/licenses/by-nc-sa/4.0) Permissions beyond the scope of this license may be available at http://sensepost.com/contact.
+Rattler is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (http://creativecommons.org/licenses/by-nc-sa/4.0)  
+Permissions beyond the scope of this license may be available at http://sensepost.com/contact.
