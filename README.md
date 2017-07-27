@@ -1,7 +1,7 @@
 # Introduction
 By Chris Le Roy (@brompwnie) chris@sensepost.com
 
-Rattler is a tool that automates the identification of DLL's which can be used for DLL preloading attacks.
+Rattler is a tool that automates the identification of DLL's which can be used for DLL preloading attacks. More information can be found in this blogpost https://sensepost.com/blog/2016/rattleridentifying-and-exploiting-dll-preloading-vulnerabilities/.
 
 
 # What does it do?
