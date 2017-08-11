@@ -310,7 +310,6 @@ int startUp(TCHAR *targetAppPath)
 		)
 	{
 		printf("[-] ERROR: CreateProcess failed (%d).\n", GetLastError());
-		system("pause");
 		return 0;
 	}
 	else
@@ -624,7 +623,6 @@ int main(int argc, char *argv[], char *envp)
 	if (argc < 3)
 	{
 		printf("[*] USAGE: Rattler.exe \"c:\\Path\\To\\Target\\Executable.exe\" 1\2 \n");
-		system("pause");
 		return 0;
 	}
 	else
@@ -644,14 +642,12 @@ int main(int argc, char *argv[], char *envp)
 			printf("[+] IMPLEMENTING EXECUTABLE TEST");
 			implementTest2(targetAppPath);
 			printStats(2);
-			system("pause");
 		}
 		else if (strcmp(argv[2], "2") == 0)
 		{
 			printf("[+] IMPLEMENTING INSTALLER DOWNLOADS TEST");
 			implementTest3();
 			printStats(3);
-			system("pause");
 		}
 		else
 		{
