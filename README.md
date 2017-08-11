@@ -1,4 +1,8 @@
 # Introduction
+
+[![Arsenal](https://rawgit.com/toolswatch/badges/master/arsenal/2017.svg)](http://www.toolswatch.org/2017/06/the-black-hat-arsenal-usa-2017-phenomenal-line-up-announced/)
+
+
 By Chris Le Roy (@brompwnie) chris@sensepost.com
 
 Rattler is a tool that automates the identification of DLL's which can be used for DLL preloading attacks. More information can be found in this blogpost https://sensepost.com/blog/2016/rattleridentifying-and-exploiting-dll-preloading-vulnerabilities/.
