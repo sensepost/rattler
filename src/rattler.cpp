@@ -1,13 +1,14 @@
-##include "stdafx.h"
+#include "stdafx.h"
 #include <windows.h>
 #include <psapi.h>
 #include <string>
 #include <algorithm>
-#include "resource.h"
+//#include "resource.h"
 #include <tlhelp32.h>
-#include "Shlobj.h"
+#include <Shlobj.h>
+#include <iostream>
 
-using namespace::std;
+using namespace std;
 
 std::string globalChecker = "";
 
@@ -273,7 +274,7 @@ int PrintModules(DWORD processID)
 }
 
 
-int copyFile(TCHAR *fileToCopy, TCHAR *copiedFileName)
+int copyFile(LPCWSTR fileToCopy, LPCWSTR copiedFileName)
 {
 	if (CopyFile(fileToCopy, copiedFileName, FALSE))
 	{
@@ -520,7 +521,7 @@ int prepTest3(wstring dllToTest)
 	wstring middle = L"\\";
 	wstring finalPath = path + middle + dllFileName;
 	TCHAR * fileToCopyTCHAR = (wchar_t *)finalPath.c_str();
-	copyFile(L"payload.dll", fileToCopyTCHAR);
+	copyFile(__TEXT("payload.dll"), fileToCopyTCHAR);
 	return 0;
 }
 
