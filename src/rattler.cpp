@@ -10,7 +10,7 @@
 
 using namespace std;
 
-std::string globalChecker = "";
+//std::string globalChecker = "";
 
 std::wstring wStringDLLs[200];
 std::wstring test2DLLsToTest[200];
@@ -30,7 +30,7 @@ int test3VulnCount = 0;
 
 TCHAR * targetAppPath;
 
-DWORD GetParentProcessID(DWORD dwProcessID)
+DWORD GetParentProcessID(const DWORD &dwProcessID)
 {
 	DWORD dwParentProcessID = -1;
 	HANDLE			hProcessSnapshot;
@@ -57,7 +57,7 @@ DWORD GetParentProcessID(DWORD dwProcessID)
 }
 
 
-int killProcessWithProcessID(DWORD processID)
+int killProcessWithProcessID(const DWORD & processID)
 {
 	//cout << "\nDEBUG: ATTEMPTING TO KILL: " << processID;
 	HANDLE processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
@@ -78,7 +78,7 @@ int killProcessWithProcessID(DWORD processID)
 
 
 
-DWORD FindProcessId(const std::wstring& processName)
+DWORD FindProcessId(LPCTSTR processName)
 {
 	PROCESSENTRY32 processInfo;
 	processInfo.dwSize = sizeof(processInfo);
@@ -88,7 +88,7 @@ DWORD FindProcessId(const std::wstring& processName)
 		return 0;
 
 	Process32First(processesSnapshot, &processInfo);
-	if (!processName.compare(processInfo.szExeFile))
+	if (_tcsicmp(processName,processInfo.szExeFile)==0)
 	{
 		CloseHandle(processesSnapshot);
 		return processInfo.th32ProcessID;
@@ -96,7 +96,7 @@ DWORD FindProcessId(const std::wstring& processName)
 
 	while (Process32Next(processesSnapshot, &processInfo))
 	{
-		if (!processName.compare(processInfo.szExeFile))
+		if (_tcsicmp(processName,processInfo.szExeFile)==0)
 		{
 			CloseHandle(processesSnapshot);
 			return processInfo.th32ProcessID;
@@ -108,7 +108,7 @@ DWORD FindProcessId(const std::wstring& processName)
 }
 
 
-int killProcess(const std::wstring& processName)
+int killProcess(LPCTSTR processName)
 {
 	int processIdToKill = FindProcessId(processName);
 	killProcessWithProcessID(processIdToKill);
@@ -159,7 +159,7 @@ int KillChildrenProcesses(DWORD parentProcessID)
 
 int checkPayload(int numTest,wstring currentTargetDLL)
 {
-	if (FindProcessId(L"Calculator.exe")| FindProcessId(L"calc.exe"))
+	if (FindProcessId(TEXT("Calculator.exe"))| FindProcessId(TEXT("calc.exe")))
 	{
 		HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 		if (hStdout == INVALID_HANDLE_VALUE)
@@ -172,13 +172,13 @@ int checkPayload(int numTest,wstring currentTargetDLL)
 		
 		 if (numTest==2)
 		{
-			wcout << "\n[*] INFO: DLL IS VULNERABLE TO EXECUTABLE TEST-> " << currentTargetDLL << endl;
+			wcout << L"\n[*] INFO: DLL IS VULNERABLE TO EXECUTABLE TEST-> " << currentTargetDLL << endl;
 			test2VulnearbleDLLs[test2VulnCount] = currentTargetDLL;
 			test2VulnCount++;
 		}
 		else if (numTest == 3)
 		{
-			wcout << "\n[*] INFO: DLL IS VULNERABLE TO DOWNLOADS INSTALLER TEST-> " << currentTargetDLL << endl;
+			wcout << L"\n[*] INFO: DLL IS VULNERABLE TO DOWNLOADS INSTALLER TEST-> " << currentTargetDLL << endl;
 			test3VulnearbleDLLs[test3VulnCount] = currentTargetDLL;
 			test3VulnCount++;
 		}
@@ -274,7 +274,7 @@ int PrintModules(DWORD processID)
 }
 
 
-int copyFile(LPCWSTR fileToCopy, LPCWSTR copiedFileName)
+int copyFile(const LPCTSTR fileToCopy, const LPCTSTR copiedFileName)
 {
 	if (CopyFile(fileToCopy, copiedFileName, FALSE))
 	{
@@ -288,9 +288,9 @@ int copyFile(LPCWSTR fileToCopy, LPCWSTR copiedFileName)
 }
 
 
-int startUp(TCHAR *targetAppPath)
+int startUp(const LPCTSTR targetAppPath)
 {
-	printf("[+] STARTING UP...\n");
+	_tprintf(TEXT("[+] STARTING UP...\n"));
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 
@@ -310,14 +310,16 @@ int startUp(TCHAR *targetAppPath)
 		&pi)           // Pointer to PROCESS_INFORMATION structure
 		)
 	{
-		printf("[-] ERROR: CreateProcess failed (%d).\n", GetLastError());
-		system("pause");
+		_tprintf(TEXT("[-] ERROR: CreateProcess failed (%d).\n"), GetLastError());
+		//system("pause");
+		_tprintf(TEXT("[+] PAUSE...  hit a key .\n"));
+		getchar();
 		return 0;
 	}
 	else
 	{
 		DWORD procID = pi.dwProcessId;
-		printf("[*] TARGET PROCESS ID: %d\n", procID);
+		_tprintf(TEXT("[*] TARGET PROCESS ID: %d\n"), procID);
 		Sleep(9000);
 		PrintModules(procID);
 		KillChildrenProcesses(procID);
@@ -331,7 +333,7 @@ int startUp(TCHAR *targetAppPath)
 
 int doDllFoo(wstring targetDLL)
 {
-	wstring postfix = (L"_ORIG");
+	const wstring postfix(L"_ORIG");
 
 	wstring fileToCopyWSTRING(targetDLL);
 	TCHAR * fileToCopyTCHAR = (wchar_t *)fileToCopyWSTRING.c_str();
@@ -343,7 +345,7 @@ int doDllFoo(wstring targetDLL)
 
 	copyFile(fileToCopyTCHAR, copiedFileNameTCHAR);
 
-	copyFile(L"payload.dll", fileToCopyTCHAR);
+	copyFile(TEXT("payload.dll"), fileToCopyTCHAR);
 
 	return 0;
 }
@@ -372,7 +374,7 @@ int prepTest2(wstring targetExecutablePath, wstring dllToTest)
 	
 	TCHAR * fileToCopyTCHAR = (wchar_t *)fileToCopyWSTRING.c_str();
 
-	copyFile(L"payload.dll", fileToCopyTCHAR);
+	copyFile(TEXT("payload.dll"), fileToCopyTCHAR);
 
 	return 0;
 }
@@ -398,7 +400,7 @@ int test2(wstring targetDLL)
 		&pi)           // Pointer to PROCESS_INFORMATION structure
 		)
 	{
-		printf("[-] ERROR: CREATE PROCESS FAILED (%d).\n", GetLastError());
+		_tprintf(TEXT("[-] ERROR: CREATE PROCESS FAILED (%d).\n"), GetLastError());
 		checkPayload(2,targetDLL);
 		return 0;
 	}
@@ -444,7 +446,7 @@ int cleanUpTest2(wstring targetExecutablePath, wstring dllToTest)
 		wcout << "\n[-] ERROR:EXECUTABLE TEST COULD NOT DELETE FILE: " << fileToDeleteTCHAR << ", ERROR CODE: " << GetLastError() << endl;;
 	}
 
-	killProcess(L"Calculator.exe");
+	killProcess(TEXT("Calculator.exe"));
 
 	return 0;
 }
@@ -521,7 +523,7 @@ int prepTest3(wstring dllToTest)
 	wstring middle = L"\\";
 	wstring finalPath = path + middle + dllFileName;
 	TCHAR * fileToCopyTCHAR = (wchar_t *)finalPath.c_str();
-	copyFile(__TEXT("payload.dll"), fileToCopyTCHAR);
+	copyFile(TEXT("payload.dll"), fileToCopyTCHAR);
 	return 0;
 }
 
@@ -545,7 +547,7 @@ int test3(wstring targetDLL)
 		&pi)           // Pointer to PROCESS_INFORMATION structure
 		)
 	{
-		printf("[-] ERROR: CREATE PROCESS FAILED (%d).\n", GetLastError());
+		_tprintf(TEXT("[-] ERROR: CREATE PROCESS FAILED (%d).\n"), GetLastError());
 		checkPayload(3, targetDLL);
 		return 0;
 	}
@@ -576,27 +578,34 @@ int cleanUpTest3(wstring dllToTest)
 	string strJustDllFileName = strDllName.substr(findDll + 1);
 	std::wstring dllFileName(strJustDllFileName.begin(), strJustDllFileName.end());
 
-	wstring middle = L"\\";
-	wstring finalPath = path + middle + dllFileName;
+	TCHAR middle[2] = _T("\\");
+	TCHAR* finalPath = new TCHAR[_tcsclen(path) + _tcsclen(middle) + dllFileName.length() + 2];
+	memset(finalPath, 0, sizeof(finalPath));
+	_tcscpy_s(finalPath, sizeof(path), path);
+	_tcscat_s(finalPath, sizeof(finalPath) + sizeof(middle), middle);
+	_tcscat_s(finalPath, sizeof(finalPath) + dllFileName.size(), dllFileName.c_str());
+	//wstring finalPath = path + middle + dllFileName;
 	//wcout << "\nFINAL COPY PATH: " << finalPath << endl;
 
-	TCHAR * fileToDeleteTCHAR = (wchar_t *)finalPath.c_str();
+	TCHAR * fileToDeleteTCHAR = std::move(finalPath);
 
 
 	if (!DeleteFile(fileToDeleteTCHAR))
 	{
-		wcout << "\n[-] ERROR:DOWNLOAD INSTALLER TEST COULD NOT DELETE FILE: " << fileToDeleteTCHAR <<", ERROR CODE: "<<GetLastError()<< endl;;
+		_tprintf(TEXT("\n[-] ERROR:DOWNLOAD INSTALLER TEST COULD NOT DELETE FILE: %s , ERROR CODE: %d\n"), fileToDeleteTCHAR,GetLastError());
 	}
 
-	killProcess(L"Calculator.exe");
+	killProcess(TEXT("Calculator.exe"));
 	return 0;
 }
 
 int implementTest3()
 {
+	_tprintf(TEXT("[*] implementTest3\n"));
 	for (int count = 0; count < test3TargetCount; count++)
 	{
 		HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
 		if (hStdout == INVALID_HANDLE_VALUE)
 		{
 			cout << "[-] ERROR: Error while getting input handle" << endl;
@@ -604,7 +613,7 @@ int implementTest3()
 		}
 		SetConsoleTextAttribute(hStdout, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE);
 
-		wcout << "\n[*] TARGETING DLL-> " << testThreeDLLsToTest[count];
+		_tprintf(TEXT("[*] TARGETING DLL-> %s\n"), testThreeDLLsToTest[count].c_str());
 
 		SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
@@ -618,45 +627,50 @@ int implementTest3()
 	return 0;
 }
 
-int main(int argc, char *argv[], char *envp)
+int _tmain(int argc, TCHAR *argv[], TCHAR *envp)
 {
-	printf("[+] RATTLER \n");
+	_tprintf(TEXT("[+] RATTLER \n"));
 
 	if (argc < 3)
 	{
-		printf("[*] USAGE: Rattler.exe \"c:\\Path\\To\\Target\\Executable.exe\" 1\2 \n");
-		system("pause");
+		_tprintf(TEXT("[*] USAGE: Rattler.exe \"c:\\Path\\To\\Target\\Executable.exe\" 1\2 \n"));
+		_tprintf(TEXT("[*9 PAUSE\n"));
+		getchar();
 		return 0;
 	}
 	else
 	{
-		printf("[*] TARGET APPLICATION: %s\n", argv[1]);
-
-		size_t newsize = strlen(argv[1]) + 1;
-		wchar_t * wcstring = new wchar_t[newsize];
+		_tprintf(TEXT("[*] TARGET APPLICATION: %s\n"), argv[1]);
+		size_t newsize =  _tcslen(argv[1]) + 1;
+		TCHAR * wcstring = new TCHAR[newsize];
 		size_t convertedChars = 0;
-		mbstowcs_s(&convertedChars, wcstring, newsize, argv[1], _TRUNCATE);
-		globalChecker = "vlc";				
+		memcpy(wcstring, argv[1], newsize);
+		//mbstowcs_s(&convertedChars, , newsize, _TRUNCATE);
+		//globalChecker = "vlc";				,
 		targetAppPath = wcstring;
 		startUp(targetAppPath);
 
-		if (strcmp(argv[2], "1") == 0)
+		if (_tcscmp(argv[2], _T("1")) == 0)
 		{
-			printf("[+] IMPLEMENTING EXECUTABLE TEST");
+			_tprintf(TEXT("[+] IMPLEMENTING EXECUTABLE TEST\n"));
 			implementTest2(targetAppPath);
 			printStats(2);
-			system("pause");
+			//system("pause");
+			_tprintf(TEXT("[*] PAUSE\n"));
+			getchar();
 		}
-		else if (strcmp(argv[2], "2") == 0)
+		else if (_tcscmp(argv[2], _T("2")) == 0)
 		{
-			printf("[+] IMPLEMENTING INSTALLER DOWNLOADS TEST");
+			_tprintf(TEXT("[+] IMPLEMENTING INSTALLER DOWNLOADS TEST\n"));
 			implementTest3();
 			printStats(3);
-			system("pause");
+			//system("pause");
+			_tprintf(TEXT("[*9 PAUSE\n"));
+			getchar();
 		}
 		else
 		{
-			printf("[-] ERROR, I don't know what to do :\\..");
+			_tprintf(TEXT("[-] ERROR, I don't know what to do :\\..\n"));
 		}
 	}
 }
